@@ -1,0 +1,223 @@
+{
+  "accounts": [
+    {
+      "name": "Checking",
+      "transactions": {
+        "reconciled": [
+          {
+            "title": "Opening Balance",
+            "amount": 805.39,
+            "date": "2016-08-20"
+          }
+        ],
+        "scheduled": [
+          {
+            "title": "Garden of Life",
+            "amount": 3108.27,
+            "range": {
+              "start": "2016-08-26"
+            },
+            "expressions": [
+              "0 0 * * 5 *:2W"
+            ]
+          },
+          {
+            "title": "Weekly Expenditures",
+            "amount": -300.00,
+            "range": {
+              "start": "2016-08-21"
+            },
+            "expressions": [
+              "0 0 * * 0 *:1W"
+            ]
+          },
+          {
+            "title": "Mortgage",
+            "amount": -2734.80,
+            "range": {
+              "start": "2016-09-01"
+            },
+            "expressions": [
+              "0 0 1 * * *"
+            ]
+          },
+          {
+            "title": "FPL",
+            "amount": -250.00,
+            "range": {
+              "start": "2016-09-01"
+            },
+            "expressions": [
+              "0 0 1 * * *"
+            ]
+          },
+          {
+            "title": "Google",
+            "amount": -9.99,
+            "range": {
+              "start": "2016-09-03"
+            },
+            "expressions": [
+              "0 0 3 * * *"
+            ]
+          },
+          {
+            "title": "Chase Credit Card",
+            "amount": -100.00,
+            "range": {
+              "start": "2016-09-04"
+            },
+            "expressions": [
+              "0 0 4 * * *"
+            ]
+          },
+          {
+            "title": "Playstation",
+            "amount": -29.99,
+            "range": {
+              "start": "2016-09-05"
+            },
+            "expressions": [
+              "0 0 5 * * *"
+            ]
+          },
+          {
+            "title": "Audible",
+            "amount": -14.95,
+            "range": {
+              "start": "2016-09-08"
+            },
+            "expressions": [
+              "0 0 8 * * *"
+            ]
+          },
+          {
+            "title": "MS Office",
+            "amount": -6.99,
+            "range": {
+              "start": "2016-09-08"
+            },
+            "expressions": [
+              "0 0 8 * * *"
+            ]
+          },
+          {
+            "title": "Sewer",
+            "amount": -80.30,
+            "range": {
+              "start": "2016-11-12"
+            },
+            "dates": [
+              "2016-11-12",
+              "2017-02-12",
+              "2017-05-12",
+              "2017-08-12",
+              "2017-11-12"
+            ]
+          },
+          {
+            "title": "HELOC",
+            "amount": -557.50,
+            "range": {
+              "start": "2016-08-15"
+            },
+            "expressions": [
+              "0 0 15 * * *"
+            ]
+          },
+          {
+            "title": "GitHub",
+            "amount": -7.00,
+            "range": {
+              "start": "2016-08-15",
+              "end": "2017-01-01"
+            },
+            "expressions": [
+              "0 0 15 * * *"
+            ]
+          },
+          {
+            "title": "Car Insurance",
+            "amount": -191.69,
+            "range": {
+              "start": "2016-08-15"
+            },
+            "expressions": [
+              "0 0 15 * * *"
+            ]
+          },
+          {
+            "title": "Cell Phones",
+            "amount": -183.43,
+            "range": {
+              "start": "2016-08-16"
+            },
+            "expressions": [
+              "0 0 16 * * *"
+            ]
+          },
+          {
+            "title": "Truck Loan",
+            "amount": -497.95,
+            "range": {
+              "start": "2016-08-17"
+            },
+            "expressions": [
+              "0 0 17 * * *"
+            ]
+          },
+          {
+            "title": "Van Loan",
+            "amount": -447.91,
+            "range": {
+              "start": "2016-08-19"
+            },
+            "expressions": [
+              "0 0 19 * * *"
+            ]
+          },
+          {
+            "title": "Netflix",
+            "amount": -10.75,
+            "range": {
+              "start": "2016-08-25"
+            },
+            "expressions": [
+              "0 0 25 * * *"
+            ]
+          },
+          {
+            "title": "Comcast",
+            "amount": -58.94,
+            "range": {
+              "start": "2016-08-26"
+            },
+            "expressions": [
+              "0 0 26 * * *"
+            ]
+          },
+          {
+            "title": "Tequsta Water",
+            "amount": -36.76,
+            "range": {
+              "start": "2016-08-28"
+            },
+            "expressions": [
+              "0 0 28 * * *"
+            ]
+          },
+          {
+            "title": "Pool Service",
+            "amount": -85.00,
+            "range": {
+              "start": "2016-08-28"
+            },
+            "expressions": [
+              "0 0 28 * * *"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
