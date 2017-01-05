@@ -116,4 +116,82 @@ class Helper {
       }
   }
 
+  static function buildAccounts($accounts, $mysql) {
+      $result = array();
+      foreach($accounts as $account) {
+          if ($curr = Helper::buildAccount($account, $mysql))
+              $result[] = $curr;
+      }
+      return $result;
+  }
+
+  static function buildAccount($account, $mysql) {
+      $stm = $mysql->prepare('SELECT * FROM accounts WHERE id = :id');
+      $stm->execute(array(
+          ':id' => $account
+      ));
+      $row = $stm->fetch();
+      if ($row) {
+          $current_account = array(
+              'id' => $row['id'],
+              'name' => $row['name'],
+              'transactions' => array(
+                  'reconciled' => array(),
+                  'scheduled' => array()
+              )
+          );
+
+          $stm2 = $mysql->prepare('SELECT * FROM schedules WHERE account = :id');
+          $stm2->execute(array(
+              ':id' => $account
+          ));
+          $schedules = $stm2->fetchAll();
+          if ($schedules && is_array($schedules) && count($schedules) > 0) {
+              foreach($schedules as $schedule) {
+                  $current_schedule = array(
+                      'id' => $row['id'],
+                      'title' => $schedule['name'],
+                      'amount' => $schedule['amount'],
+                      'range' => array(
+                          'start' => $schedule['range_start']
+                      )
+                  );
+
+                  if ($schedule['range_end'])
+                      $current_schedule['range']['end'] = $schedule['range_end'];
+
+                  if ($schedule['expressions'])
+                      $current_schedule['expressions'] = json_decode($schedule['expressions'], true);
+
+                  if ($schedule['dates'])
+                      $current_schedule['dates'] = json_decode($schedule['dates'], true);
+
+
+                  $current_account['transactions']['scheduled'][] = $current_schedule;
+              }
+          }
+
+          $stm3 = $mysql->prepare('SELECT * FROM transactions WHERE account = :id');
+          $stm3->execute(array(
+              ':id' => $account
+          ));
+          $transactions = $stm3->fetchAll();
+          if ($transactions && is_array($transactions) && count($transactions) > 0) {
+              foreach($transactions as $transaction) {
+                  $current_account['transactions']['reconciled'][] = array(
+                      'id' => $row['id'],
+                      'title' => $transaction['name'],
+                      'amount' => $transaction['amount'],
+                      'date' => $transaction['dt']
+                  );
+              }
+          }
+
+          return $current_account;
+      }
+      else {
+          return false;
+      }
+  }
+
 }

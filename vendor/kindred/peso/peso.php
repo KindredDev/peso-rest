@@ -14,7 +14,10 @@ class peso {
       throw new Exception('Invalid JSON in Peso constructor.');
   }
 
-  function build() {
+  function build($end=null) {
+    if (null === $end)
+        $end = date('Y-m-t', strtotime("+1 year"));
+
     $calendar = array();
 
     foreach($this->data['accounts'] as $account) {
@@ -23,7 +26,7 @@ class peso {
 
       $range = array(
         "start" => date('Y-m-\1', $account_start),
-        "end"   => date('Y-m-t', strtotime("+1 year"))
+        "end"   => $end
       );
       $sum = 0;
 

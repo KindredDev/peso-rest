@@ -10,7 +10,29 @@ $mysql = ConnectionFactory::getFactory()->getMySqlConnection();
 
 // Routes
 
-$app->post('/calendar', function ($request, $response, $args) use ($mysql) {
+// generate recipe
+$app->post('/data/recipe', function ($request, $response, $args) use ($mysql) {
+    Helper::validateSession($request, $mysql);
+
+    $payload = array();
+    $body = $request->getParsedBody();
+
+    $data = array(
+      'member' => $body['member'],
+      'accounts' => $body['accounts'] ?: null
+    );
+
+    $accounts = Helper::buildAccounts($body['accounts'], $mysql);
+
+    return $response->withStatus(200)
+        ->withHeader('Content-Type', 'application/json')
+        ->write(json_encode(array(
+            'accounts' => $accounts
+        )));
+});
+
+// generate calendar
+$app->post('/data/calendar', function ($request, $response, $args) use ($mysql) {
     $this->logger->info("POST request to '/calendar'");
 
     Helper::validateSession($request, $mysql);
@@ -21,86 +43,32 @@ $app->post('/calendar', function ($request, $response, $args) use ($mysql) {
     $data = array(
       'member' => $body['member'],
       'accounts' => $body['accounts'] ?: null,
-      'range_start' => $body['range_start'] ?: null,
-      'range_end' => $body['range_end'] ?: null
+      'range_start' => $body['range_start'] ?: "-1 year",
+      'range_end' => $body['range_end'] ?: "+1 year"
     );
 
-    $accounts = array();
-    foreach($body['accounts'] as $account) {
-        $stm = $mysql->prepare('SELECT * FROM accounts WHERE id = :id');
-        $stm->execute(array(
-            ':id' => $account
-        ));
-        $row = $stm->fetch();
-        if ($row) {
-            $current_account = array(
-                'name' => $row['name'],
-                'transactions' => array(
-                    'reconciled' => array(),
-                    'scheduled' => array()
-                )
-            );
-
-            $stm2 = $mysql->prepare('SELECT * FROM schedules WHERE account = :id');
-            $stm2->execute(array(
-                ':id' => $account
-            ));
-            $schedules = $stm2->fetchAll();
-            if ($schedules && is_array($schedules) && count($schedules) > 0) {
-                foreach($schedules as $schedule) {
-                    $current_schedule = array(
-                        'title' => $schedule['name'],
-                        'amount' => $schedule['amount'],
-                        'range' => array(
-                            'start' => $schedule['range_start']
-                        )
-                    );
-
-                    if ($schedule['range_end'])
-                        $current_schedule['range']['end'] = $schedule['range_end'];
-
-                    if ($schedule['expressions'])
-                        $current_schedule['expressions'] = json_decode($schedule['expressions'], true);
-
-                    if ($schedule['dates'])
-                        $current_schedule['dates'] = json_decode($schedule['dates'], true);
-
-
-                    $current_account['transactions']['scheduled'][] = $current_schedule;
-                }
-            }
-
-            $stm3 = $mysql->prepare('SELECT * FROM transactions WHERE account = :id');
-            $stm3->execute(array(
-                ':id' => $account
-            ));
-            $transactions = $stm3->fetchAll();
-            if ($transactions && is_array($transactions) && count($transactions) > 0) {
-                foreach($transactions as $transaction) {
-                    $current_account['transactions']['reconciled'][] = array(
-                        'title' => $transaction['name'],
-                        'amount' => $transaction['amount'],
-                        'date' => $transaction['dt']
-                    );
-                }
-            }
-
-            $accounts[] = $current_account;
-        }
-    }
-
     $json = json_encode(array(
-        'accounts' => $accounts
+        'accounts' => Helper::buildAccounts($body['accounts'], $mysql)
     ));
     $peso = new Peso($json);
 
-    $data = false;
+    $start = date('Y-m-d', strtotime($data['range_start']));
+    $end = date('Y-m-d', strtotime($data['range_end']));
+
+    $calendar = false;
     if ($peso->data && is_array($peso->data))
-        $data = $peso->build();
+        $calendar = $peso->build( $data['range_end'] );
+
+    $abridged = array();
+    foreach ($calendar as $day=>$value) {
+        $curr = date('Y-m-d', strtotime($day));
+        if (($curr >= $start) && ($curr <= $end))
+            $abridged[$day] = $value;
+    }
 
     return $response->withStatus(200)
         ->withHeader('Content-Type', 'application/json')
-        ->write(json_encode($data));
+        ->write(json_encode($abridged));
 });
 
 // create schedule
